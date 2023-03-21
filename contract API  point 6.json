@@ -1,0 +1,705 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Squad Management System",
+    "version": "1",
+    "description": "OpenAPI for SMS RESTful API"
+  },
+  "servers": [
+    {
+      "description": "Todolist RESTful API Server",
+      "url": "https://{environment}.localhost:8080/api/v1",
+      "variables": {
+        "environment": {
+          "description": "Server Environment",
+          "default": "dev",
+          "enum": [
+            "dev"
+          ]
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/squad/add": {
+      "post": {
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "tags": [
+          "Squad"
+        ],
+        "summary": "post add squad",
+        "description": "add squad (admin only)",
+        "parameters": [
+          {
+            "name": "bearer_token",
+            "in": "header",
+            "required": true,
+            "description": "token untuk authenticated",
+            "schema": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGdWxsbmFtZSI6ImFkbWluIiwiRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJJc19Sb2xlIjoxLCJleHAiOjE2Nzg5ODcxMTd9.zbMtYjuQ83CRc_T_RB4a_O_qoYRcKW2WREvJvU8Xat0"
+            }
+          }       
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json" : {
+              "schema" : {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "deskripsi" : {
+                    "type":"string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "example" : {
+                "name": "marketing",
+                "deskripsi": "promotion and spornsorships"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success Create Squad",
+            "content": {
+              "application/json" : {
+                "schema" : {
+                  "type": "object",
+                    "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "responseCode": {
+                      "type": "integer",
+                      "minLength": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "example" : {
+                  "name": "marketing",
+                  "resposeCode" : 201,
+                  "message": "add squad successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "failed is empty a body request",
+            "content": {
+              "application/json" : {
+                "schema" : {
+                  "type": "object",
+                    "properties": {
+                    "responseCode": {
+                      "type": "integer",
+                      "minLength": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "example" : {
+                  "resposeCode" : 400,
+                  "message": "is empty a body request"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "failed is not authenticated",
+            "content": {
+              "application/json" : {
+                "schema" : {
+                  "type": "object",
+                    "properties": {
+                    "responseCode": {
+                      "type": "integer",
+                      "minLength": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "example" : {
+                  "resposeCode" : 400,
+                  "message": "unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "failed forbidden",
+            "content": {
+              "application/json" : {
+                "schema" : {
+                  "type": "object",
+                    "properties": {
+                    "responseCode": {
+                      "type": "integer",
+                      "minLength": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "example" : {
+                  "resposeCode" : 403,
+                  "message": "forbidden"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed internal server error",
+            "content": {
+              "application/json" : {
+                "schema" : {
+                  "type": "object",
+                    "properties": {
+                    "responseCode": {
+                      "type": "integer",
+                      "minLength": 1
+                    },
+                    "message": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "example" : {
+                  "resposeCode" : 500,
+                  "message": "internal ser"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/squad/delete/:id": {
+        "delete": {
+          "security": [
+            {
+              "JWT": []
+            }
+          ],
+          "tags": [
+            "Squad"
+          ],
+          "summary": "delete squad",
+          "description": "delete squad (admin only)",
+          "parameters": [
+            {
+              "name": "bearer_token",
+              "in": "header",
+              "required": true,
+              "description": "token untuk authenticated",
+              "schema": {
+                "type": "string",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGdWxsbmFtZSI6ImFkbWluIiwiRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJJc19Sb2xlIjoxLCJleHAiOjE2Nzg5ODcxMTd9.zbMtYjuQ83CRc_T_RB4a_O_qoYRcKW2WREvJvU8Xat0"
+              }
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "id squad sebagai parameter delete",
+              "schema": {
+                "type": "integer",
+                "example": 1
+              }
+            }       
+          ],
+          "responses": {
+            "200": {
+              "description": "Success Delete Squad",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "name": "marketing",
+                    "resposeCode" : 201,
+                    "message": "delete squad successfully"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "failed is empty a path request",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "resposeCode" : 400,
+                    "message": "is empty a path request"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "failed is not authenticated",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "resposeCode" : 400,
+                    "message": "unauthorized"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "failed forbidden",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "resposeCode" : 403,
+                    "message": "forbidden"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "failed internal server error",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "resposeCode" : 500,
+                    "message": "internal server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+    },
+    "/squad/update/:id": {
+        "put": {
+          "security": [
+            {
+              "JWT": []
+            }
+          ],
+          "tags": [
+            "Squad"
+          ],
+          "summary": "update squad",
+          "description": "update squad (admin only)",
+          "parameters": [
+            {
+              "name": "bearer_token",
+              "in": "header",
+              "required": true,
+              "description": "token untuk authenticated",
+              "schema": {
+                "type": "string",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGdWxsbmFtZSI6ImFkbWluIiwiRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJJc19Sb2xlIjoxLCJleHAiOjE2Nzg5ODcxMTd9.zbMtYjuQ83CRc_T_RB4a_O_qoYRcKW2WREvJvU8Xat0"
+              }
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "id squad sebagai parameter update",
+              "schema": {
+                "type": "integer",
+                "example": 1
+              }
+            }       
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json" : {
+                "schema" : {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "deskripsi" : {
+                      "type":"string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "example" : {
+                  "name": "marketing",
+                  "deskripsi": "promotion and spornsorships"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success Update Squad",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "name": "marketing",
+                    "resposeCode" : 200,
+                    "message": "update squad successfully"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "failed is empty a path request",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "resposeCode" : 400,
+                    "message": "is empty a path request"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "failed is not authenticated",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "resposeCode" : 400,
+                    "message": "unauthorized"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "failed forbidden",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "resposeCode" : 403,
+                    "message": "forbidden"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "failed internal server error",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "resposeCode" : 500,
+                    "message": "internal server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+    },
+    "/squad/list": {
+        "get": {
+          "security": [
+            {
+              "JWT": []
+            }
+          ],
+          "tags": [
+            "Squad"
+          ],
+          "summary": "list squad",
+          "description": "update squad (admin only)",
+          "parameters": [
+            {
+              "name": "bearer_token",
+              "in": "header",
+              "required": true,
+              "description": "token untuk authenticated",
+              "schema": {
+                "type": "string",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGdWxsbmFtZSI6ImFkbWluIiwiRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJJc19Sb2xlIjoxLCJleHAiOjE2Nzg5ODcxMTd9.zbMtYjuQ83CRc_T_RB4a_O_qoYRcKW2WREvJvU8Xat0"
+              }
+            }      
+          ],
+          "responses": {
+            "200": {
+              "description": "Get List Squad successfully",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "user": {
+                        "type": "object",
+                        "properties": {
+                            "uuid": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                        }
+                      },
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "examples": {
+                    "user": {
+                      "description": "Example success get all todolist",
+                      "value": [
+                        {
+                          "id": "1",
+                          "name": "intern engineer",
+                          "deskripsi": "test"
+                        },
+                        {
+                            "id": "2",
+                            "name": "intern hr",
+                            "deskripsi": "test"
+                        }
+                      ]
+                    },
+                    "admin": {
+                        "description": "Example success get all todolist",
+                        "value": [
+                          {
+                            "id": "1",
+                            "name": "intern engineer",
+                            "deskripsi": "test",
+                            "user": [{"uuid" : "1"},{"uuid" : "2"}]
+                          },
+                          {
+                              "id": "2",
+                              "name": "intern hr",
+                              "deskripsi": "test",
+                              "user": [{"uuid" : "3"},{"uuid" : "4"}]
+                          }
+                        ]
+                      }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "failed is not authenticated",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "resposeCode" : 400,
+                    "message": "unauthorized"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "failed internal server error",
+              "content": {
+                "application/json" : {
+                  "schema" : {
+                    "type": "object",
+                      "properties": {
+                      "responseCode": {
+                        "type": "integer",
+                        "minLength": 1
+                      },
+                      "message": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "example" : {
+                    "resposeCode" : 500,
+                    "message": "internal server error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+        "securitySchemes": {
+            "JWT": {
+                "description": "Authentication for Squad RESTful API",
+                "type": "apiKey",
+                "in": "header",
+                "name": "X-API-Key"
+            }
+        }
+    }
+}
