@@ -1,0 +1,1306 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Spec Squad Management",
+    "version": "1",
+    "description": "User Management, Organization, Chapter created by Achmad Rizki Nur Fauzie"
+  },
+  "paths": {
+    "/user": {
+      "post": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "tags": ["User Management"],
+        "summary": "Create new user",
+        "description": "Create new user",
+        "parameters": [
+          {
+            "name": "is_admin",
+            "in": "raw_request",
+            "required": true,
+            "description": "If is_admin was false, then role user was not admin",
+            "schema": {
+              "type": "boolean",
+              "nullable": false,
+              "default": false
+            }
+          },
+          {
+            "name": "tipe_chapter",
+            "in": "raw_request",
+            "required": true,
+            "description": "Example: FE = 1, BE = 2, QA = 3",
+            "schema": {
+              "type": "integer",
+              "nullable": false
+            }
+          },
+          {
+            "name": "tipe_organization",
+            "in": "raw_request",
+            "required": true,
+            "description": "Example: Enggineering Manager = 1, Technical Lead = 2",
+            "schema": {
+              "type": "integer",
+              "nullable": false
+            }
+          },
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do create user"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {},
+              "examples": {
+                "request_body": {
+                  "description": "Example raw request, user must have to be role admin to create user",
+                  "value": {
+                    "username": "AchmadRizkiNF",
+                    "email": "achmadrizkinf@gmail.com",
+                    "password": "testingCooking",
+                    "is_admin": 0,
+                    "tipe_pegawai": 1,
+                    "tipe_chapter": 1,
+                    "tipe_organization": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success create user",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "description": "Success create user",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Insert user success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request, failed create user",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "description": "Bad Request, failed create user",
+                    "value": {
+                      "status_code": 400,
+                      "message": "Bad Request, failed create user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["User Management"],
+        "summary": "Get All User",
+        "description": "Get All User",
+        "parameters": [
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do get all user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get All User Success",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Get All User Success",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Get All User Success",
+                      "data": [
+                        {
+                          "uuid": "123e4567-e89b-12d3-a456-426614174000",
+                          "username": "Achmad Rizki Nur Fauzie",
+                          "email": "achmadrizkinf@gmail.com",
+                          "tipe_pegawai": "Intern"
+                        },
+                        {
+                          "uuid": "123e4567-e89b-12d3-a456-S3114174000",
+                          "username": "Achmad Rizki Ganteng",
+                          "email": "testingCooking@gmail.com",
+                          "tipe_pegawai": "OS"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "tags": ["User Management"],
+        "summary": "Change User by uuid",
+        "description": "Change User by uuid. You must have bearrer token to access this",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {},
+              "examples": {
+                "request_body": {
+                  "description": "Example raw request, user must have to be role admin to change role user by uuid",
+                  "value": {
+                    "uuid": "123e4567-e89b-12d3-a456-S3114174000",
+                    "username": "achmadrizkinf",
+                    "email": "ashiapTest@gmail.com",
+                    "alamat": "jakarta",
+                    "tanggal_lahir": "19 Januari 2029",
+                    "agama": "Islam",
+                    "no_telp": "09121230",
+                    "jenis_kelamin": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid_user",
+            "in": "raw_request",
+            "required": true,
+            "description": "if admin was true, user was admin"
+          },
+          {
+            "name": "jenis_kelamin",
+            "in": "raw_request",
+            "required": true,
+            "description": "Example: Male = 1, Female = 2"
+          },
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do delete user by uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success update user role by uuid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "description": "Success update user role by uuid",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Success update user role by uuid"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed delete, user uuid not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "failed": {
+                    "description": "Failed delete todolist",
+                    "value": {
+                      "status_code": 400,
+                      "message": "Failed delete user, user uuid not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{uuid_user}": {
+      "delete": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "tags": ["User Management"],
+        "summary": "Delete existing user by uuid user",
+        "description": "Delete existing user by uuid user",
+        "parameters": [
+          {
+            "name": "uuid_user",
+            "in": "path",
+            "required": true,
+            "description": "if admin was true, user was admin"
+          },
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do delete user by uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success delete user by uuid user",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "description": "Success delete todolist",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Success delete user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Failed delete, user uuid not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "failed": {
+                    "description": "Failed delete todolist",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Failed delete user, user uuid not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/change_role": {
+      "put": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "tags": ["User Management"],
+        "summary": "Change Role user by uuid. You must have bearrer token to access this",
+        "description": "Change Role user by uuid. You must have bearrer token to access this",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {},
+              "examples": {
+                "request_body": {
+                  "description": "Example raw request, user must have to be role admin to change role user by uuid",
+                  "value": {
+                    "uuid": "123e4567-e89b-12d3-a456-S3114174000",
+                    "role": 4
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid_user",
+            "in": "raw_request",
+            "required": true,
+            "description": "if admin was true, user was admin"
+          },
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do delete user by uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success update user role by uuid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "description": "Success update user role by uuid",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Success update user role by uuid"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed delete, user uuid not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "failed": {
+                    "description": "Failed delete todolist",
+                    "value": {
+                      "status_code": 400,
+                      "message": "Failed delete user, user uuid not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organization": {
+      "get": {
+        "tags": ["Organization"],
+        "summary": "Get All List Organization",
+        "description": "Get All Organization, user and admin can see this",
+        "parameters": [
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do get all Organization"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get All Organization Success",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Get All Organization Success",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Get All Organization Success",
+                      "data": [
+                        {
+                          "id": 1,
+                          "name": "Enggineer Manager",
+                          "details": "EM Details"
+                        },
+                        {
+                          "id": 2,
+                          "name": "Back-End Manager",
+                          "details": "BE Details"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do post organization"
+          }
+        ],
+        "tags": ["Organization"],
+        "summary": "Create new organization",
+        "description": "Create new organization",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {},
+              "examples": {
+                "request_body": {
+                  "description": "Example raw request, user must have to be role admin to create user",
+                  "value": {
+                    "name": "Front-End Enggineer (FE)",
+                    "details": "TESTING"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Organization user",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "description": "Success Organization user",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Insert Organization success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request, failed create Organization",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "description": "Bad Request, failed create Organization",
+                    "value": {
+                      "status_code": 400,
+                      "message": "Bad Request, failed create Organization"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do update organization"
+          }
+        ],
+        "tags": ["Organization"],
+        "summary": "Update organization by id",
+        "description": "Update organization by id",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {},
+              "examples": {
+                "request_body": {
+                  "description": "Example raw request, user must have to be role admin to create user",
+                  "value": {
+                    "id": 1,
+                    "name": "Front-End Enggineer (FE)",
+                    "details": "TESTING"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update Organization Success",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "description": "Update Organization Success",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Update Organization success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request, failed update Organization",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "description": "Bad Request, failed update Organization",
+                    "value": {
+                      "status_code": 400,
+                      "message": "Bad Request, failed update Organization"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organization/{id}": {
+      "delete": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "tags": ["Organization"],
+        "summary": "Delete existing organization by id",
+        "description": "Delete existing organization by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id organization"
+          },
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do delete user by uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success delete user by uuid user",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "description": "Success delete todolist",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Success delete user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Failed delete, user uuid not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "failed": {
+                    "description": "Failed delete todolist",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Failed delete user, user uuid not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapter": {
+      "post": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "tags": ["Chapter"],
+        "summary": "Create new chapter",
+        "description": "Create new chapter",
+        "parameters": [
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do create chapter"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {},
+              "examples": {
+                "request_body": {
+                  "description": "Example raw request, user must have to be role admin to create user",
+                  "value": {
+                    "name": "Backend Enggineer (BE)",
+                    "details": "Backend Enggineer adalah blablabla"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success create chapter",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "description": "Success create chapter",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Insert chapter success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request, failed create chapter",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "description": "Bad Request, failed create chapter",
+                    "value": {
+                      "status_code": 400,
+                      "message": "Bad Request, failed create chapter"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Chapter"],
+        "summary": "Get All List Chapter",
+        "description": "Get All Chapter, user and admin can see this",
+        "parameters": [
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do get all Chapter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get All Chapter Success",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Get All Chapter Success",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Get All Chapter Success",
+                      "data": [
+                        {
+                          "id": 1,
+                          "name": "Front-End Enggineer (FE)",
+                          "details": "FE Details"
+                        },
+                        {
+                          "id": 2,
+                          "name": "Back-End Enggineer (BE)",
+                          "details": "BE Details"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "tags": ["Chapter"],
+        "summary": "Change Role user by uuid. You must have bearrer token to access this",
+        "description": "Change Role user by uuid. You must have bearrer token to access this",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {},
+              "examples": {
+                "request_body": {
+                  "description": "Example raw request, user must have to be role admin to change role user by uuid",
+                  "value": {
+                    "uuid": "123e4567-e89b-12d3-a456-S3114174000",
+                    "role": 4
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid_user",
+            "in": "raw_request",
+            "required": true,
+            "description": "if admin was true, user was admin"
+          },
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do delete user by uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success update user role by uuid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "description": "Success update user role by uuid",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Success update user role by uuid"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete user, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed delete, user uuid not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "failed": {
+                    "description": "Failed delete todolist",
+                    "value": {
+                      "status_code": 400,
+                      "message": "Failed delete user, user uuid not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chapter/{id}": {
+      "delete": {
+        "security": [
+          {
+            "TodolistAuth": []
+          }
+        ],
+        "tags": ["Chapter"],
+        "summary": "Delete existing chapter by id",
+        "description": "Delete existing chapter by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id chapter"
+          },
+          {
+            "name": "bearrer",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token to do delete chapter by id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success delete user by id chapter",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "description": "Success delete chapter",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Success delete chapter"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Token Invalid": {
+                    "description": "UnAuthorize, token invalid",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete chapter, UnAuthorize (token invalid)"
+                    }
+                  },
+                  "Token Invalid (token time exceeded)": {
+                    "description": "UnAuthorize, token invalid (token time exceeded)",
+                    "value": {
+                      "status_code": 401,
+                      "message": "Failed delete chapter, UnAuthorize token invalid(time exceeded)"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Failed delete, chapter id not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "failed": {
+                    "description": "Failed delete chapter",
+                    "value": {
+                      "status_code": 200,
+                      "message": "Failed delete chapter, chapter id not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
