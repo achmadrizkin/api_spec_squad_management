@@ -1,0 +1,708 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Squad Management System",
+    "description": "OpenAPI for Todolist RESTful API"
+  },
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Login Account",
+        "description": "Login to existing account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              },
+              "examples": {
+                "admin": {
+                  "description": "Example login as admin",
+                  "value": {
+                    "username": "admin",
+                    "password": "admin123"
+                  }
+                },
+                "user": {
+                  "description": "Example login as user",
+                  "value": {
+                    "username": "user",
+                    "password": "admin123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseAuth"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Success login as admin",
+                    "value": {
+                      "message": "login success",
+                      "response_code": 200,
+                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluMTIzIn0.eRTIR_L7vUt9NZtS5g3p_zrJDownIKzsmjy_P_aTEQQ"
+                    }
+                  },
+                  "user": {
+                    "description": "Success login as user",
+                    "value": {
+                      "message": "login success",
+                      "response_code": 200,
+                      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluMTIzIn0.eRTIR_L7vUt9NZtS5g3p_zrJDownIKzsmjy_P_aTEQQ"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Bad Request",
+                    "value": {
+                      "message": "username atau password salah",
+                      "response_code": 400
+                    }
+                  },
+                  "user": {
+                    "description": "Bad Request",
+                    "value": {
+                      "message": "username atau password salah",
+                      "response_code": 400
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Internal Server Error",
+                    "value": {
+                      "message": "Internal Server Error",
+                      "response_code": 500
+                    }
+                  },
+                  "user": {
+                    "description": "Internal Server Error",
+                    "value": {
+                      "message": "Internal Server Error",
+                      "response_code": 500
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/change-password": {
+      "put": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "Bearer Token",
+            "description": "include in headers",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGdWxsbmFtZSI6ImFkbWluIiwiRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJJc19Sb2xlIjoxLCJleHAiOjE2Nzg5ODcxMTd9.zbMtYjuQ83CRc_T_RB4a_O_qoYRcKW2WREvJvU8Xat0"
+            }
+          }
+        ],
+        "summary": "Change Password",
+        "description": "Change Account Password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePassword"
+              },
+              "examples": {
+                "admin": {
+                  "description": "Example change password admin account",
+                  "value": {
+                    "id_user": 1,
+                    "old_passoword": "admin123",
+                    "new_password": "admin1234",
+                    "confirm_new_password": "admin1234"
+                  }
+                },
+                "user": {
+                  "description": "Example change password user account",
+                  "value": {
+                    "id": 2,
+                    "old_passoword": "user123",
+                    "new_password": "user1234",
+                    "confirm_new_password": "user1234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success change password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Success change password admin",
+                    "value": {
+                      "message": "change password success"
+                    }
+                  },
+                  "user": {
+                    "description": "Success change password user",
+                    "value": {
+                      "message": "change password success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Status Unauthorized",
+                    "value": {
+                      "message": "invalid token",
+                      "response_code": 401
+                    }
+                  },
+                  "user": {
+                    "description": "Status Unauthorized",
+                    "value": {
+                      "message": "invalid token",
+                      "response_code": 401
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Internal Server Error",
+                    "value": {
+                      "message": "Internal Server Error",
+                      "response_code": 500
+                    }
+                  },
+                  "user": {
+                    "description": "Internal Server Error",
+                    "value": {
+                      "message": "Internal Server Error",
+                      "response_code": 500
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "parameters": [
+          {
+            "name": "Bearer Token",
+            "description": "include in headers",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGdWxsbmFtZSI6ImFkbWluIiwiRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJJc19Sb2xlIjoxLCJleHAiOjE2Nzg5ODcxMTd9.zbMtYjuQ83CRc_T_RB4a_O_qoYRcKW2WREvJvU8Xat0"
+            }
+          }
+        ],
+        "summary": "Logout Account",
+        "description": "Logout from existing account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Logout"
+              },
+              "examples": {
+                "admin": {
+                  "description": "Example logout account and deleting token",
+                  "value": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluMTIzIn0.eRTIR_L7vUt9NZtS5g3p_zrJDownIKzsmjy_P_aTEQQ"
+                  }
+                },
+                "user": {
+                  "description": "Example logout account and deleting token",
+                  "value": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluMTIzIn0.eRTIR_L7vUt9NZtS5g3p_zrJDownIKzsmjy_P_aTEQQ"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success logout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseAuth"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Success logout",
+                    "value": {
+                      "message": "logout success",
+                      "response_code": 200
+                    }
+                  },
+                  "user": {
+                    "description": "Success login as user",
+                    "value": {
+                      "message": "logout success",
+                      "response_code": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Status Unauthorized",
+                    "value": {
+                      "message": "invalid token",
+                      "response_code": 401
+                    }
+                  },
+                  "user": {
+                    "description": "Status Unauthorized",
+                    "value": {
+                      "message": "invalid token",
+                      "response_code": 401
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Internal Server Error",
+                    "value": {
+                      "message": "Internal Server Error",
+                      "response_code": 500
+                    }
+                  },
+                  "user": {
+                    "description": "Internal Server Error",
+                    "value": {
+                      "message": "Internal Server Error",
+                      "response_code": 500
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attendance": {
+      "get": {
+        "tags": [
+          "Attendance"
+        ],
+        "summary": "Get Attendance",
+        "description": "Get All Attendance",
+        "parameters": [
+          {
+            "name": "Bearer Token",
+            "description": "include in headers",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGdWxsbmFtZSI6ImFkbWluIiwiRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJJc19Sb2xlIjoxLCJleHAiOjE2Nzg5ODcxMTd9.zbMtYjuQ83CRc_T_RB4a_O_qoYRcKW2WREvJvU8Xat0"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all attendance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attendance"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "List of all attendance",
+                    "value": [
+                      {
+                        "id": 1,
+                        "tanggal": "2023-03-20",
+                        "jam_datang": "08:00:00",
+                        "jam_pulang": "17:00:00",
+                        "overtime": 0,
+                        "status": 1
+                      },
+                      {
+                        "id": 2,
+                        "tanggal": "2023-03-20",
+                        "jam_datang": "09:00:00",
+                        "jam_pulang": "18:00:00",
+                        "overtime": 0,
+                        "status": 1
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Status Unauthorized",
+                      "value": {
+                        "message": "invalid token",
+                        "response_code": 401
+                      }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "user": {
+                    "description": "Status Forbidden",
+                    "value": {
+                      "message": "forbidden",
+                      "response_code": 403
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Internal Server Error",
+                    "value": {
+                      "message": "Internal Server Error",
+                      "response_code": 500
+                    }
+                  },
+                  "user": {
+                    "description": "Internal Server Error",
+                    "value": {
+                      "message": "Internal Server Error",
+                      "response_code": 500
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/download-attendance": {
+      "get": {
+        "tags": [
+          "Attendance"
+        ],
+        "parameters": [
+          {
+            "name": "Bearer Token",
+            "description": "include in headers",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGdWxsbmFtZSI6ImFkbWluIiwiRW1haWwiOiJhZG1pbkBnbWFpbC5jb20iLCJJc19Sb2xlIjoxLCJleHAiOjE2Nzg5ODcxMTd9.zbMtYjuQ83CRc_T_RB4a_O_qoYRcKW2WREvJvU8Xat0"
+            }
+          }
+        ],
+        "summary": "Download Attendance",
+        "description": "Download Attendance in CSV Format",
+        "produces": [
+          "text/csv"
+        ],
+        "responses": {
+          "200": {
+            "description": "Download attendance",
+            "headers": {
+              "Content-Disposition": {
+                "type": "string",
+                "description": "Attachment with filename attendance.csv",
+                "example": "attachment; filename=attendance.csv"
+              }
+            },
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "example": {
+                    "description": "Download Attendance Success",
+                    "value": {
+                      "message": "download success",
+                      "response_code": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Status Unauthorized",
+                      "value": {
+                        "message": "invalid token",
+                        "response_code": 401
+                      }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "user": {
+                    "description": "Status Forbidden",
+                    "value": {
+                      "message": "forbidden",
+                      "response_code": 403
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Responses"
+                },
+                "examples": {
+                  "admin": {
+                    "description": "Internal Server Error",
+                    "value": {
+                      "message": "Internal Server Error",
+                      "response_code": 500
+                    }
+                  },
+                  "user": {
+                    "description": "Internal Server Error",
+                    "value": {
+                      "message": "Internal Server Error",
+                      "response_code": 500
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Responses": {
+        "type": "object",
+        "properties": {
+          "response_code": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ResponseAuth": {
+        "type": "object",
+        "properties": {
+          "response_code": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "Login" : {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "ChangePassword": {
+        "type": "object",
+        "properties": {
+          "id_user": {
+            "type": "integer"
+          },
+          "old_passoword": {
+            "type": "string"
+          },
+          "new_password": {
+            "type": "string"
+          },
+          "confirm_new_password": {
+            "type": "string"
+          }
+        }
+      },
+      "Logout": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "Attendance": {
+        "type": "array",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "auto increment"
+          },
+          "tanggal": {
+            "type": "string",
+            "format": "date"
+          },
+          "jam_datang": {
+            "type": "string",
+            "format": "time"
+          },
+          "jam_pulang": {
+            "type": "string",
+            "format": "time"
+          },
+          "overtime": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
