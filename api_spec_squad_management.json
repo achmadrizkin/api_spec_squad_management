@@ -84,7 +84,7 @@
                           "type": "string",
                           "minLength": 1
                         },
-                        "deskripsi" : {
+                        "description" : {
                           "type":"string",
                           "minLength": 1
                         }
@@ -101,7 +101,10 @@
                   }
                 },
                 "example" : {
-                  "name": "marketing",
+                  "data": {
+                    "name": "marketing",
+                    "description": "promotion and spornsorships"
+                  },
                   "resposeCode" : 201,
                   "message": "add squad successfully"
                 }
@@ -429,16 +432,25 @@
             }
           },
           "responses": {
-            "200": {
-              "description": "Success Update Squad",
+            "201": {
+              "description": "Success Create Squad",
               "content": {
                 "application/json" : {
                   "schema" : {
                     "type": "object",
                       "properties": {
-                      "name": {
-                        "type": "string",
-                        "minLength": 1
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "description" : {
+                            "type":"string",
+                            "minLength": 1
+                          }
+                        }
                       },
                       "responseCode": {
                         "type": "integer",
@@ -451,9 +463,12 @@
                     }
                   },
                   "example" : {
-                    "name": "marketing",
-                    "resposeCode" : 200,
-                    "message": "update squad successfully"
+                    "data": {
+                      "name": "marketing",
+                      "description": "promotion and spornsorships"
+                    },
+                    "resposeCode" : 201,
+                    "message": "edit squad successfully"
                   }
                 }
               }
@@ -589,61 +604,70 @@
                   "schema" : {
                     "type": "object",
                       "properties": {
-                      "name": {
-                        "type": "string",
-                        "minLength": 1
-                      },
-                      "user": {
-                        "type": "object",
+                      "data": {
+                        "type" : "object",
                         "properties": {
-                            "uuid": {
-                              "type": "string",
-                              "minLength": 1
+                          "name": {
+                            "type": "string",
+                            "minLength": 1
+                          },
+                          "user": {
+                            "type": "object",
+                            "properties": {
+                                "uuid": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
                             }
+                          },
+                          "responseCode": {
+                            "type": "integer",
+                            "minLength": 1
+                          },
+                          "message": {
+                            "type": "string",
+                            "minLength": 1
+                          }
                         }
-                      },
-                      "responseCode": {
-                        "type": "integer",
-                        "minLength": 1
-                      },
-                      "message": {
-                        "type": "string",
-                        "minLength": 1
                       }
                     }
                   },
                   "examples": {
                     "user": {
                       "description": "Example success get all todolist",
-                      "value": [
-                        {
-                          "id": "1",
-                          "name": "intern engineer",
-                          "deskripsi": "test"
-                        },
-                        {
-                            "id": "2",
-                            "name": "intern hr",
-                            "deskripsi": "test"
-                        }
-                      ]
+                      "value": {
+                        "data" : [
+                            {
+                              "id": "1",
+                              "name": "intern engineer",
+                              "deskripsi": "test"
+                            },
+                            {
+                                "id": "2",
+                                "name": "intern hr",
+                                "deskripsi": "test"
+                            }
+                          ]
+                      }
                     },
                     "admin": {
                         "description": "Example success get all todolist",
-                        "value": [
-                          {
-                            "id": "1",
-                            "name": "intern engineer",
-                            "deskripsi": "test",
-                            "user": [{"uuid" : "1"},{"uuid" : "2"}]
-                          },
-                          {
-                              "id": "2",
-                              "name": "intern hr",
-                              "deskripsi": "test",
-                              "user": [{"uuid" : "3"},{"uuid" : "4"}]
-                          }
-                        ]
+                        "value": {
+                          "data" : [
+                              {
+                                "id": "1",
+                                "name": "intern engineer",
+                                "deskripsi": "test",
+                                "user": [{"uuid" : "1"},{"uuid" : "2"}]
+                              },
+                              {
+                                  "id": "2",
+                                  "name": "intern hr",
+                                  "deskripsi": "test",
+                                  "user": [{"uuid" : "3"},{"uuid" : "4"}]
+                              }
+                          ]
+                        }
                       }
                   }
                 }
