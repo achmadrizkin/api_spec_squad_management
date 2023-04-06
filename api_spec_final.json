@@ -1,0 +1,1755 @@
+openapi: 3.0.0
+info:
+  title: API Spec Squad Management
+  version: '1'
+  description: User Management, Squad Management, Chapter Management, Organization Management, Tipe Pegawai, Absensi, dan Role
+paths:
+  /user:
+    post:
+      security: []
+      tags:
+        - User Management
+      summary: Create User
+      description: Create a new user, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nip:
+                  type: string
+                nama_karyawan:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                is_admin:
+                  type: integer
+                email:
+                  type: string
+                perusahaan:
+                  type: string
+                tipe_pegawai:
+                  type: integer
+                tipe_chapter:
+                  type: integer
+                tipe_organization:
+                  type: integer
+                tipe_grade:
+                  type: integer
+                tanggal_bergabung:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  nip: '202304010001'
+                  nama_karyawan: Admin
+                  username: admin
+                  password: admin
+                  is_admin: 0
+                  email: admin@gmail.com
+                  perusahaan: PT BlueBird Tbk.
+                  tipe_pegawai: 1
+                  tipe_chapter: 1
+                  tipe_organization: 1
+                  tipe_grade: 1
+                  tanggal_bergabung: '2006-01-02 15:04:05.000'
+      responses:
+        '200':
+          description: Success create user
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 201
+                    message: Successfully created user!
+        '400':
+          description: Bad Request, failed create user, request body not available
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: 'Key: ''CreateUser.TipeGrade'' Error:Field validation for ''TipeGrade'' failed on the ''required'' tag'
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                duplicate:
+                  description: username unique
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+    get:
+      security: []
+      tags:
+        - User Management
+      summary: Read All Users
+      description: Read all users, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success read all user
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Get all data users success
+                    data:
+                      - id: 1
+                        nip: 202304010001
+                        nama_karyawan: admin
+                        username: admin
+                        email: admin@gmail.com
+                        tipe_pegawai: OS
+                        chapter: Golang Engineer
+                        organization: Engineering Manager
+                        grade: junior
+                        tanggal_bergabung: 01 Jan 2023
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /user/:id:
+    delete:
+      security: []
+      tags:
+        - User Management
+      summary: Delete User By ID
+      description: Delete User By ID, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Delete User Success
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Delete User Success
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /user/change-pass/:id:
+    put:
+      security: []
+      tags:
+        - User Management
+      summary: Change Password User By ID
+      description: Change Password By ID, all role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                new_password:
+                  type: string
+                  minLength: 8
+                confirm_new_password:
+                  type: string
+                  minLength: 8
+            examples:
+              request_body:
+                value:
+                  old_passoword: admin
+                  new_passoword: '12345678'
+                  confirm_new_password: '12345678'
+      responses:
+        '200':
+          description: Change Password Success
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Change Password Success
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              examples:
+                password less than 8 characters:
+                  value:
+                    status_code: 400
+                    message: Password cannot under 8 character
+                password contain symbol and number:
+                  value:
+                    status_code: 400
+                    message: password contain symbol and number
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /login:
+    post:
+      security: []
+      tags:
+        - Authentication
+      summary: Login
+      description: all role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  username: admin
+                  password: admin
+      responses:
+        '200':
+          description: Succes Login
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Successfully log in!
+                    data:
+                      - token_type: Bearer
+                        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODA3MTcxNTksImlhdCI6MTY4MDcxMzU1OSwibmJmIjoxNjgwNzEzNTU5LCJzdWIiOjF9.l-gZjTgCOtH-2v2FsZwLeH4DE5v7AXugSruIqu6h--Y
+        '400':
+          description: Bad Request, invalid request
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: Bad Request, Invalid username or password
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /logout:
+    post:
+      security: []
+      tags:
+        - Authentication
+      summary: Logout
+      description: Logout, all role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success read all user
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Successfully Logout
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+  /chapter:
+    get:
+      security: []
+      tags:
+        - Chapter Management
+      summary: Read All Chapter
+      description: Read all chapter, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success read all chapter
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Get data success
+                    data:
+                      - id: 1
+                        name: Golang Engineer
+                      - id: 2
+                        name: Golang Engineer
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+    post:
+      security: []
+      tags:
+        - Chapter Management
+      summary: Create Chapter
+      description: Create a new chapter, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  nip: Golang Engineer
+      responses:
+        '200':
+          description: Success create chapter
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 201
+                    message: Insert Chapter Success
+        '400':
+          description: Bad Request, failed create user, request body not available
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: 'Key: ''CreateUser.TipeGrade'' Error:Field validation for ''TipeGrade'' failed on the ''required'' tag'
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /chapter/:id:
+    put:
+      security: []
+      tags:
+        - Chapter Management
+      summary: Update Chapter By ID
+      description: Update chapter, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  nip: Golang Engineer
+      responses:
+        '200':
+          description: Success update chapter
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Update Chapter Success
+        '400':
+          description: Bad Request, failed create user, request body not available
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: 'Key: ''CreateUser.TipeGrade'' Error:Field validation for ''TipeGrade'' failed on the ''required'' tag'
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+    delete:
+      security: []
+      tags:
+        - Chapter Management
+      summary: Delete Chapter By ID
+      description: Delete User By ID, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Delete Chapter Success
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Delete Chapter Success
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /tipe-pegawai:
+    get:
+      security: []
+      tags:
+        - Tipe Pegawai Management
+      summary: Read All Tipe Pegawai
+      description: Read all Tipe Pegawai, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success read all chapter
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Get All Tipe Pegawai Success
+                    Data:
+                      - ID: 1
+                        Name: OS
+                        Description: outsourcing
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+    post:
+      security: []
+      tags:
+        - Tipe Pegawai Management
+      summary: Create Tipe Pegawai
+      description: Create a new Tipe Pegawai, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  name: OS
+                  description: outsourcing
+      responses:
+        '200':
+          description: Success create tipe pegawai
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 201
+                    message: Insert Chapter Success
+        '400':
+          description: Bad Request, failed create user, request body not available
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: Bad Request, Name or Description is empty
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+                duplicate:
+                  value:
+                    status_code: 500
+                    message: internal server error, duplicate name
+  /tipe-pegawai/:id:
+    put:
+      security: []
+      tags:
+        - Tipe Pegawai Management
+      summary: Update Tipe Pegawai By ID
+      description: Update Tipe Pegawai, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  name: OS
+                  description: outsourcing
+      responses:
+        '200':
+          description: Success update tipe pegawai
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Update Chapter Success
+                    data:
+                      Name: OS
+                      Description: outsourcing
+        '400':
+          description: Bad Request, failed create user, request body not available
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: Bad Request, Name or Description is empty
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+    delete:
+      security: []
+      tags:
+        - Tipe Pegawai Management
+      summary: delete Tipe Pegawai By ID
+      description: delete Tipe Pegawai, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success delete tipe pegawai
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Delete Tipe Pegawai Success
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /ogranization:
+    get:
+      security: []
+      tags:
+        - Organization Management
+      summary: Read All Organization
+      description: Read all Organization, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success read all organization
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Get All Organization Success
+                    Data:
+                      - Id: 1
+                        Name: Engineering Manager
+                        Parent: 2
+                        Description: dummy
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+    post:
+      security: []
+      tags:
+        - Organization Management
+      summary: Create Organization
+      description: Create a new Organization, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Name:
+                  type: string
+                Parent:
+                  type: integer
+                Description:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  Name: Engineering Manager
+                  Parent: 2
+                  Description: dummy
+      responses:
+        '200':
+          description: Success create organization
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 201
+                    message: Insert Organization Success
+        '400':
+          description: Bad Request, failed create user, request body not available
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: 'Key: ''GradeRequest.Name'' Error:Field validation for ''Name'' failed on the ''required'' tag'
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+                duplicate:
+                  value:
+                    status_code: 500
+                    message: internal server error, duplicate name
+  /organization/:id:
+    put:
+      security: []
+      tags:
+        - Organization Management
+      summary: Update Tipe Organization By ID
+      description: Update Tipe Organization, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  Name: Engineering Manager
+                  Parent: 2
+                  Description: dummy
+      responses:
+        '200':
+          description: Success update Grade
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Update Organization Success
+        '400':
+          description: Bad Request, failed create user, request body not available
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: 'Key: ''GradeRequest.Name'' Error:Field validation for ''Name'' failed on the ''required'' tag'
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+    delete:
+      security: []
+      tags:
+        - Organization Management
+      summary: delete Organization By ID
+      description: delete Organization, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success delete Organization
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Delete Organization Success
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /grade:
+    get:
+      security: []
+      tags:
+        - Grade Management
+      summary: Read All Grade
+      description: Read all Grade, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success read all grade
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Get data success
+                    data:
+                      - name: junior
+                      - name: senior
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+    post:
+      security: []
+      tags:
+        - Grade Management
+      summary: Create Grade
+      description: Create a new Grade, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  name: OS
+                  description: outsourcing
+      responses:
+        '200':
+          description: Success create Grade
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 201
+                    message: Insert Grade Success
+        '400':
+          description: Bad Request, failed create user, request body not available
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: 'Key: ''GradeRequest.Name'' Error:Field validation for ''Name'' failed on the ''required'' tag'
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+                duplicate:
+                  value:
+                    status_code: 500
+                    message: internal server error, duplicate name
+  /grade/:id:
+    put:
+      security: []
+      tags:
+        - Grade Management
+      summary: Update Tipe Grade By ID
+      description: Update Tipe Grade, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  name: Junior1
+      responses:
+        '200':
+          description: Success update Grade
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Update Grade Success
+        '400':
+          description: Bad Request, failed create user, request body not available
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: 'Key: ''GradeRequest.Name'' Error:Field validation for ''Name'' failed on the ''required'' tag'
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+    delete:
+      security: []
+      tags:
+        - Grade Management
+      summary: delete Grade By ID
+      description: delete Grade, admin role
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success delete grade
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Delete Grade Success
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /absensi:
+    post:
+      security: []
+      tags:
+        - Absensi
+      summary: Create Absensi
+      description: Create a new Absensi, admin user
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tap_id:
+                  type: integer
+                location:
+                  type: string
+            examples:
+              request_body:
+                value:
+                  tap_id: 2
+                  location: test
+      responses:
+        '200':
+          description: Success create absensi
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 201
+                    message: Create absensi success
+                    Data:
+                      User:
+                        Id: 1
+                        nip: '202304010001'
+                        username: admin
+                        perusahaan: PT BlueBird Tbk.
+                        nama_karyawan: Admin
+                        email: admin@gmail.com
+                        tipe_pegawai: OS
+                        chapter: Golang Engineer
+                        organization: qa2
+                        grade: senior1
+                        tanggal_bergabung: 04 Apr 2023
+                      Absensi:
+                        UserID: 1
+                        Date: 06 Apr 2023
+                        TapIn: ''
+                        TapOut: 01:14:49 WIB
+                        Location: test
+                        Status: ''
+        '400':
+          description: Bad Request, failed create user, request body not available
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 400
+                    message: 'Key: ''GradeRequest.Name'' Error:Field validation for ''Name'' failed on the ''required'' tag'
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+    get:
+      security: []
+      tags:
+        - Absensi
+      summary: Read All Absensi
+      description: Read all Absensi, all admin
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success read all grade
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Get data success
+                    Data:
+                      - User:
+                          Id: 1
+                          nip: '202304010001'
+                          username: admin
+                          perusahaan: PT BlueBird Tbk.
+                          nama_karyawan: Admin
+                          email: admin@gmail.com
+                          tipe_pegawai: OS
+                          chapter: Golang Engineer
+                          organization: qa2
+                          grade: senior1
+                          tanggal_bergabung: 04 Apr 2023
+                        Absensi:
+                          UserID: 1
+                          Date: 04 Apr 2023
+                          TapIn: 10:05:02 WIB
+                          TapOut: 17:24:32 WIB
+                          Location: Gedun Baru Lt. 4
+                          Status: OK
+                      - User:
+                          Id: 1
+                          nip: '202304010001'
+                          username: admin
+                          perusahaan: PT BlueBird Tbk.
+                          nama_karyawan: Admin
+                          email: admin@gmail.com
+                          tipe_pegawai: OS
+                          chapter: Golang Engineer
+                          organization: qa2
+                          grade: senior1
+                          tanggal_bergabung: 04 Apr 2023
+                        Absensi:
+                          UserID: 1
+                          Date: 05 Apr 2023
+                          TapIn: ''
+                          TapOut: 12:54:13 WIB
+                          Location: Gedun Baru Lt. 4
+                          Status: Forget absent Tap IN
+                      - User:
+                          Id: 1
+                          nip: '202304010001'
+                          username: admin
+                          perusahaan: PT BlueBird Tbk.
+                          nama_karyawan: Admin
+                          email: admin@gmail.com
+                          tipe_pegawai: OS
+                          chapter: Golang Engineer
+                          organization: qa2
+                          grade: senior1
+                          tanggal_bergabung: 04 Apr 2023
+                        Absensi:
+                          UserID: 1
+                          Date: 06 Apr 2023
+                          TapIn: ''
+                          TapOut: 01:14:49 WIB
+                          Location: test
+                          Status: ''
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /absensi/:id:
+    get:
+      security: []
+      tags:
+        - Absensi
+      summary: Read Absensi by user
+      description: Read all Absensi, user
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success read absensi user
+          content:
+            application/json:
+              examples:
+                raw:
+                  value:
+                    status_code: 200
+                    message: Get data success
+                    Data:
+                      - User:
+                          Id: 1
+                          nip: '202304010001'
+                          username: admin
+                          perusahaan: PT BlueBird Tbk.
+                          nama_karyawan: Admin
+                          email: admin@gmail.com
+                          tipe_pegawai: OS
+                          chapter: Golang Engineer
+                          organization: qa2
+                          grade: senior1
+                          tanggal_bergabung: 04 Apr 2023
+                        Absensi:
+                          UserID: 1
+                          Date: 04 Apr 2023
+                          TapIn: 10:05:02 WIB
+                          TapOut: 17:24:32 WIB
+                          Location: Gedun Baru Lt. 4
+                          Status: OK
+                      - User:
+                          Id: 1
+                          nip: '202304010001'
+                          username: admin
+                          perusahaan: PT BlueBird Tbk.
+                          nama_karyawan: Admin
+                          email: admin@gmail.com
+                          tipe_pegawai: OS
+                          chapter: Golang Engineer
+                          organization: qa2
+                          grade: senior1
+                          tanggal_bergabung: 04 Apr 2023
+                        Absensi:
+                          UserID: 1
+                          Date: 05 Apr 2023
+                          TapIn: ''
+                          TapOut: 12:54:13 WIB
+                          Location: Gedun Baru Lt. 4
+                          Status: Forget absent Tap IN
+                      - User:
+                          Id: 1
+                          nip: '202304010001'
+                          username: admin
+                          perusahaan: PT BlueBird Tbk.
+                          nama_karyawan: Admin
+                          email: admin@gmail.com
+                          tipe_pegawai: OS
+                          chapter: Golang Engineer
+                          organization: qa2
+                          grade: senior1
+                          tanggal_bergabung: 04 Apr 2023
+                        Absensi:
+                          UserID: 1
+                          Date: 06 Apr 2023
+                          TapIn: ''
+                          TapOut: 01:14:49 WIB
+                          Location: test
+                          Status: ''
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
+  /absensi/download:
+    get:
+      security: []
+      tags:
+        - Absensi
+      summary: Download Absensi All CSV
+      description: Read all Absensi, admin
+      parameters:
+        - name: Bearrer Token
+          in: header
+          required: true
+          description: Need bearrer token to do create user
+      responses:
+        '200':
+          description: Success read absensi user
+          content:
+            CSV: {}
+        '401':
+          description: UnAuthorize, token invalid
+          content:
+            application/json:
+              examples:
+                Tidak ada Token:
+                  value:
+                    status_code: 401
+                    message: You are not logged in
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              examples:
+                UnAuthorize:
+                  value:
+                    status_code: 403
+                    message: User is not admin, cannot access the api
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              examples:
+                java:
+                  description: Server Error, cannot get data
+                  value:
+                    status_code: 500
+                    message: Server Error, cannot get data
