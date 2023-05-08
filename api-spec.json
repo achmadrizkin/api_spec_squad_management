@@ -59,19 +59,25 @@
                   },
                   "tipe_grade": {
                     "type": "integer"
+                  },
+                  "tanggal_bergabung": {
+                    "type": "integer"
+                  },
+                  "work_hour": {
+                    "type": "integer"
                   }
                 }
               },
               "examples": {
                 "request_body": {
                   "value": {
-                    "nip": "1231",
-                    "nama_karyawan": "Admin MBEE",
-                    "username": "user11",
-                    "password": "user11",
+                    "nip": "202304010001",
+                    "nama_karyawan": "Admin",
+                    "username": "admin",
+                    "password": "admin",
                     "is_admin": 0,
                     "email": "admin@gmail.com",
-                    "perusahaan": "PT Blue bird",
+                    "perusahaan": "PT BlueBird Tbk.",
                     "tipe_pegawai": 1,
                     "tipe_chapter": 1,
                     "tipe_organization": 1,
@@ -205,6 +211,116 @@
                           "organization": "Engineering Manager",
                           "grade": "junior",
                           "tanggal_bergabung": "01 Jan 2023"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "java": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/:number_page/:limit": {
+      "get": {
+        "security": [],
+        "tags": ["User Management"],
+        "summary": "Read All Users",
+        "description": "Read all users, admin role",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success read all user",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "status_code": 200,
+                      "limit": 2,
+                      "page_now": 1,
+                      "message": "Get data success",
+                      "total_page": 3,
+                      "data": [
+                        {
+                          "id": 1,
+                          "nip": "1231",
+                          "perusahaan": "PT Blue bird11",
+                          "nama_karyawan": "admi145",
+                          "username": "admi145",
+                          "email": "admin@gmail.com",
+                          "tipe_pegawai": "Intern",
+                          "chapter": "1",
+                          "organization": "ulil",
+                          "grade": "Senior",
+                          "tanggal_bergabung": "12 Feb 2222"
+                        },
+                        {
+                          "id": 2,
+                          "nip": "1231",
+                          "perusahaan": "PT Blue bird11",
+                          "nama_karyawan": "achmadrizkinfganteng",
+                          "username": "achmadrizkinfganteng",
+                          "email": "admin@gmail.com",
+                          "tipe_pegawai": "Intern",
+                          "chapter": "3",
+                          "organization": "nama organization ceritanya",
+                          "grade": "Senior",
+                          "tanggal_bergabung": "31 Mar 2021"
                         }
                       ]
                     }
@@ -1815,7 +1931,7 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "java": {
+                  "db error": {
                     "description": "Server Error, cannot get data",
                     "value": {
                       "status_code": 500,
@@ -1849,13 +1965,16 @@
                 "type": "object",
                 "properties": {
                   "Name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100
                   },
                   "Parent": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maximum": 1
                   },
                   "Description": {
-                    "type": "string"
+                    "type": "string",
+                    "maximum": 255
                   }
                 }
               },
@@ -1888,14 +2007,26 @@
             }
           },
           "400": {
-            "description": "Bad Request, failed create user, request body not available",
+            "description": "filed empty",
             "content": {
               "application/json": {
                 "examples": {
-                  "raw": {
+                  "Field empty": {
                     "value": {
                       "status_code": 400,
-                      "message": "Key: 'GradeRequest.Name' Error:Field validation for 'Name' failed on the 'required' tag"
+                      "message": "Field name and parent cannot be empty"
+                    }
+                  },
+                  "Field name length limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "Maximum field name 100"
+                    }
+                  },
+                  "Field parent length limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "Maximum field name 10"
                     }
                   }
                 }
@@ -1937,7 +2068,7 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "java": {
+                  "Db error": {
                     "value": {
                       "status_code": 500,
                       "message": "Server Error, cannot get data"
@@ -1977,8 +2108,17 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
-                    "type": "string"
+                  "Name": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "Parent": {
+                    "type": "integer",
+                    "maximum": 1
+                  },
+                  "Description": {
+                    "type": "string",
+                    "maximum": 255
                   }
                 }
               },
@@ -2011,14 +2151,26 @@
             }
           },
           "400": {
-            "description": "Bad Request, failed create user, request body not available",
+            "description": "filed empty",
             "content": {
               "application/json": {
                 "examples": {
-                  "raw": {
+                  "Field empty": {
                     "value": {
                       "status_code": 400,
-                      "message": "Key: 'GradeRequest.Name' Error:Field validation for 'Name' failed on the 'required' tag"
+                      "message": "Field name and parent cannot be empty"
+                    }
+                  },
+                  "Field name length limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "Maximum field name 100"
+                    }
+                  },
+                  "Field parent length limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "Maximum field name 10"
                     }
                   }
                 }
@@ -2055,16 +2207,36 @@
               }
             }
           },
+          "404": {
+            "description": "Page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Server Error",
             "content": {
               "application/json": {
                 "examples": {
-                  "java": {
-                    "description": "Server Error, cannot get data",
+                  "Db error": {
                     "value": {
                       "status_code": 500,
                       "message": "Server Error, cannot get data"
+                    }
+                  },
+                  "duplicate": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "internal server error, duplicate name"
                     }
                   }
                 }
@@ -2126,6 +2298,21 @@
                     "value": {
                       "status_code": 403,
                       "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
                     }
                   }
                 }
@@ -3275,7 +3462,7 @@
     "/absensi": {
       "post": {
         "security": [],
-        "tags": ["Absensi"],
+        "tags": ["Absensi Management"],
         "summary": "Create Absensi",
         "description": "Create a new Absensi, role user",
         "parameters": [
@@ -3294,19 +3481,23 @@
                 "type": "object",
                 "properties": {
                   "tap_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "maxLength": 1
                   },
-                  "location": {
-                    "type": "string"
+                  "device_signature": {
+                    "type": "string",
+                    "maxLength": 100
                   }
                 }
               },
               "examples": {
                 "request_body": {
                   "value": {
-                    "tap_id": 2,
-                    "location": "test"
-                  }
+                    "tap_id": 1,
+                    "device_signature": "Huawei Nova 5T",
+                    "qr_code": "dajfnakfakf"
+                  },
+                  "description": "tap_id hanya memiliki 2 nilai yaitu 1 untuk tap in dan 2 untuk tap out"
                 }
               }
             }
@@ -3321,32 +3512,33 @@
                   "raw": {
                     "value": {
                       "Data": {
-                        "User": {
-                          "Id": 2,
-                          "nip": "202304010002",
-                          "username": "user",
-                          "perusahaan": "PT BlueBird Tbk.",
-                          "nama_karyawan": "User",
-                          "email": "user@gmail.com",
-                          "tipe_pegawai": "OS",
-                          "chapter": "Golang Engineer",
-                          "organization": "Engineering Manager",
-                          "squad": "Squad management system dan Squad management system (test)",
-                          "grade": "senior1",
-                          "tanggal_bergabung": "05 Apr 2023"
-                        },
-                        "Absensi": {
-                          "UserID": 2,
-                          "Date": "08 Apr 2023",
-                          "TapIn": "",
-                          "TapOut": "23:02:40 WIB",
-                          "Location": "test",
-                          "Status": "review",
-                          "Information": "waiting tap in"
-                        }
+                          "user": {
+                              "Id": 2,
+                              "nip": "202304010001",
+                              "username": "user",
+                              "perusahaan": "PT BlueBird Tbk.",
+                              "nama_karyawan": "user",
+                              "email": "user@gmail.com",
+                              "tipe_pegawai": "OS",
+                              "chapter": "Golang Engineer",
+                              "organization": "Engineering Manager",
+                              "grade": "junior",
+                              "squad": "squad management system, test squad 1 dan test squad 2",
+                              "work_hour": "Shift 1",
+                              "tanggal_bergabung": "2 Jan 2006"
+                          },
+                          "absensi": {
+                              "user_id": 2,
+                              "date": "6 May 2023",
+                              "tap_in": "",
+                              "location_tap_in": "",
+                              "tap_out": "11:59:53 WIB",
+                              "location_tap_out": "lantai 4",
+                              "status": "waiting for check in"
+                          }
                       },
-                      "StatusCode": 201,
-                      "Message": "Create absensi success"
+                      "status_code": 201,
+                      "message": "Create absensi success"
                     }
                   }
                 }
@@ -3358,10 +3550,22 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "raw": {
+                  "request body empty": {
                     "value": {
                       "status_code": 400,
-                      "message": "Key: 'GradeRequest.Name' Error:Field validation for 'Name' failed on the 'required' tag"
+                      "message": "tap_id and device_signature are empty. For example, tap_id has a value of 1 for check in and a value of 2 for check out. then for device_signature with user device details for example Huawei Nova 5 T"
+                    }
+                  },
+                  "tap_id not valid": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "tap_id mismatch example number 1 for incoming absences and number 2 for outgoing absences"
+                    }
+                  },
+                  "max length device_signature": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "Maximum character length for device_signature variable is 100"
                     }
                   }
                 }
@@ -3373,7 +3577,7 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "Tidak ada Token": {
+                  "token kosong": {
                     "value": {
                       "status_code": 401,
                       "message": "You are not logged in"
@@ -3388,10 +3592,34 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "java": {
+                  "duplicate attendance": {
                     "value": {
                       "status_code": 500,
-                      "message": "Server Error, cannot get data"
+                      "message": "attendance already exists"
+                    }
+                  },
+                  "failed to check in": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to check in. Please try again later"
+                    }
+                  },
+                  "failed to check out": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to check out. Please try again later"
+                    }
+                  },
+                  "qr code not valid": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "invalid QR code"
+                    }
+                  },
+                  "failed to take attendance": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
                     }
                   }
                 }
@@ -3402,8 +3630,8 @@
       },
       "get": {
         "security": [],
-        "tags": ["Absensi"],
-        "summary": "Read Absensi",
+        "tags": ["Absensi Management"],
+        "summary": "Read Absensi User",
         "description": "Read all Absensi by user, role user",
         "parameters": [
           {
@@ -3423,58 +3651,86 @@
                     "value": {
                       "Data": [
                         {
-                          "User": {
-                            "Id": 1,
-                            "nip": "202304010001",
-                            "username": "admin",
+                          "no": 1,
+                          "user": {
+                            "Id": 2,
+                            "nip": "202304010002",
+                            "username": "user",
                             "perusahaan": "PT BlueBird Tbk.",
-                            "nama_karyawan": "Admin",
-                            "email": "admin@gmail.com",
+                            "nama_karyawan": "User",
+                            "email": "user@gmail.com",
                             "tipe_pegawai": "OS",
                             "chapter": "Golang Engineer",
                             "organization": "Engineering Manager",
-                            "squad": "Squad management system (test), Squad management system dan test",
                             "grade": "senior1",
-                            "tanggal_bergabung": "04 Apr 2023"
+                            "squad": "Squad management system, Squad management system dan Squad management system (test)",
+                            "work_hour": "Shift 1",
+                            "tanggal_bergabung": "2 Jan 2006"
                           },
-                          "Absensi": {
-                            "UserID": 1,
-                            "Date": "07 Apr 2023",
-                            "TapIn": "18:55:21 WIB",
-                            "TapOut": "19:21:27 WIB",
-                            "Location": "test",
-                            "Status": "review",
-                            "Information": "Datang terlambat 9 jam 55 menit 21 detik dengan pulang cepat 8 jam 33 menit 54 detik"
+                          "absensi": {
+                            "user_id": 2,
+                            "date": "12 Apr 2023",
+                            "tap_id": "00:37:57 WIB",
+                            "location_tap_in": "Kantor Baru Lt. 6",
+                            "tap_out": "01:19:10 WIB",
+                            "location_tap_out": "Kantor Baru Lt. 6"
                           }
                         },
                         {
-                          "User": {
-                            "Id": 1,
-                            "nip": "202304010001",
-                            "username": "admin",
+                          "no": 2,
+                          "user": {
+                            "Id": 2,
+                            "nip": "202304010002",
+                            "username": "user",
                             "perusahaan": "PT BlueBird Tbk.",
-                            "nama_karyawan": "Admin",
-                            "email": "admin@gmail.com",
+                            "nama_karyawan": "User",
+                            "email": "user@gmail.com",
                             "tipe_pegawai": "OS",
                             "chapter": "Golang Engineer",
                             "organization": "Engineering Manager",
-                            "squad": "Squad management system (test), Squad management system dan test",
                             "grade": "senior1",
-                            "tanggal_bergabung": "04 Apr 2023"
+                            "squad": "Squad management system, Squad management system dan Squad management system (test)",
+                            "work_hour": "Shift 1",
+                            "tanggal_bergabung": "2 Jan 2006"
                           },
-                          "Absensi": {
-                            "UserID": 1,
-                            "Date": "08 Apr 2023",
-                            "TapIn": "",
-                            "TapOut": "21:19:11 WIB",
-                            "Location": "test",
-                            "Status": "review",
-                            "Information": "waiting tap in"
+                          "absensi": {
+                            "user_id": 2,
+                            "date": "13 Apr 2023",
+                            "tap_id": "00:37:57 WIB",
+                            "location_tap_in": "Kantor Baru Lt. 6",
+                            "tap_out": "21:53:31 WIB",
+                            "location_tap_out": "6th floor of the New Building"
+                          }
+                        },
+                        {
+                          "no": 3,
+                          "user": {
+                            "Id": 2,
+                            "nip": "202304010002",
+                            "username": "user",
+                            "perusahaan": "PT BlueBird Tbk.",
+                            "nama_karyawan": "User",
+                            "email": "user@gmail.com",
+                            "tipe_pegawai": "OS",
+                            "chapter": "Golang Engineer",
+                            "organization": "Engineering Manager",
+                            "grade": "senior1",
+                            "squad": "Squad management system, Squad management system dan Squad management system (test)",
+                            "work_hour": "Shift 1",
+                            "tanggal_bergabung": "2 Jan 2006"
+                          },
+                          "absensi": {
+                            "user_id": 2,
+                            "date": "14 Apr 2023",
+                            "tap_id": "00:37:57 WIB",
+                            "location_tap_in": "Kantor Baru Lt. 6",
+                            "tap_out": "",
+                            "location_tap_out": ""
                           }
                         }
                       ],
-                      "StatusCode": 200,
-                      "Message": "Get Absensi by id user Success"
+                      "status_code": 200,
+                      "message": "Take all absences successfully"
                     }
                   }
                 }
@@ -3511,16 +3767,967 @@
               }
             }
           },
+          "404": {
+            "description": "Page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "500": {
             "description": "Server Error",
             "content": {
               "application/json": {
                 "examples": {
-                  "java": {
+                  "db error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absensi/:id": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Read Absensi User by Date",
+        "description": "Read all Absensi user, role admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success read all absensi",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "Data": [
+                          {
+                              "no": 1,
+                              "user": {
+                                  "Id": 2,
+                                  "nip": "202304010001",
+                                  "username": "user",
+                                  "perusahaan": "PT BlueBird Tbk.",
+                                  "nama_karyawan": "user",
+                                  "email": "user@gmail.com",
+                                  "tipe_pegawai": "OS",
+                                  "chapter": "Golang Engineer",
+                                  "organization": "Engineering Manager",
+                                  "grade": "junior",
+                                  "squad": "squad management system, test squad 1 dan test squad 2",
+                                  "work_hour": "Shift 1",
+                                  "tanggal_bergabung": "2 Jan 2006"
+                              },
+                              "absensi": {
+                                  "user_id": 2,
+                                  "date": "6 May 2023",
+                                  "tap_in": "07:55:51 WIB",
+                                  "location_tap_in": "lantai 4",
+                                  "tap_out": "21:56:24 WIB",
+                                  "location_tap_out": "lantai 4",
+                                  "status": "Datang cepat 4 menit 9 detik dan overtime 5 jam 33 detik"
+                              }
+                          }
+                      ],
+                      "status_code": 200,
+                      "message": "Taking attendance based on user id was successful"
+                   }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request body empty",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Request body empty": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  },
+                  "Request body type not date": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
                     "description": "Server Error, cannot get data",
                     "value": {
                       "status_code": 500,
-                      "message": "Server Error, cannot get data"
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "user not found": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "user not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absensi/:id/download": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Download Absensi All CSV",
+        "description": "Read all Absensi, admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success read absensi user",
+            "content": {
+              "CSV": {}
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "user not found": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "user not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absensi/:id/:offset/:limit": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Read Absensi User by Date",
+        "description": "Read all Absensi user, role admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success read all absensi",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "Data": {
+                          "total_absensi": 2,
+                          "current_pages": 1,
+                          "total_pages": 1,
+                          "Datas": [
+                              {
+                                  "no": 1,
+                                  "user": {
+                                      "Id": 2,
+                                      "nip": "202304010001",
+                                      "username": "user",
+                                      "perusahaan": "PT BlueBird Tbk.",
+                                      "nama_karyawan": "user",
+                                      "email": "user@gmail.com",
+                                      "tipe_pegawai": "OS",
+                                      "chapter": "Golang Engineer",
+                                      "organization": "Engineering Manager",
+                                      "grade": "junior",
+                                      "squad": "squad management system, test squad 1 dan test squad 2",
+                                      "work_hour": "Shift 1",
+                                      "tanggal_bergabung": "2 Jan 2006"
+                                  },
+                                  "absensi": {
+                                      "user_id": 2,
+                                      "date": "5 May 2023",
+                                      "tap_in": "07:55:51 WIB",
+                                      "location_tap_in": "lantai 4",
+                                      "tap_out": "21:56:24 WIB",
+                                      "location_tap_out": "lantai 4",
+                                      "status": "Datang cepat 4 menit 9 detik dan overtime 5 jam 33 detik"
+                                  }
+                              },
+                              {
+                                  "no": 2,
+                                  "user": {
+                                      "Id": 2,
+                                      "nip": "202304010001",
+                                      "username": "user",
+                                      "perusahaan": "PT BlueBird Tbk.",
+                                      "nama_karyawan": "user",
+                                      "email": "user@gmail.com",
+                                      "tipe_pegawai": "OS",
+                                      "chapter": "Golang Engineer",
+                                      "organization": "Engineering Manager",
+                                      "grade": "junior",
+                                      "squad": "squad management system, test squad 1 dan test squad 2",
+                                      "work_hour": "Shift 1",
+                                      "tanggal_bergabung": "2 Jan 2006"
+                                  },
+                                  "absensi": {
+                                      "user_id": 2,
+                                      "date": "6 May 2023",
+                                      "tap_in": "",
+                                      "location_tap_in": "",
+                                      "tap_out": "22:32:46 WIB",
+                                      "location_tap_out": "lantai 4",
+                                      "status": "waiting for check in"
+                                  }
+                              }
+                          ]
+                      },
+                      "status_code": 200,
+                      "message": "Taking attendance based on user id was successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "limit seacrh": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "exceeded the search data limit"
+                    }
+                  },
+                  "user not found": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "user not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absensi/:id/date": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Read Absensi User by Date",
+        "description": "Read all Absensi user, role user",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "start_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "start_date": "2023-04-14",
+                    "end_date": "2023-04-14"
+                  },
+                  "description": "tipe data date format"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success read all absensi",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "Data": [
+                          {
+                              "no": 1,
+                              "user": {
+                                  "Id": 2,
+                                  "nip": "202304010001",
+                                  "username": "user",
+                                  "perusahaan": "PT BlueBird Tbk.",
+                                  "nama_karyawan": "user",
+                                  "email": "user@gmail.com",
+                                  "tipe_pegawai": "OS",
+                                  "chapter": "Golang Engineer",
+                                  "organization": "Engineering Manager",
+                                  "grade": "junior",
+                                  "squad": "squad management system, test squad 1 dan test squad 2",
+                                  "work_hour": "Shift 1",
+                                  "tanggal_bergabung": "2 Jan 2006"
+                              },
+                              "absensi": {
+                                  "user_id": 2,
+                                  "date": "5 May 2023",
+                                  "tap_in": "07:55:51 WIB",
+                                  "location_tap_in": "lantai 4",
+                                  "tap_out": "21:56:24 WIB",
+                                  "location_tap_out": "lantai 4",
+                                  "status": "Datang cepat 4 menit 9 detik dan overtime 5 jam 33 detik"
+                              }
+                          }
+                      ],
+                      "status_code": 200,
+                      "message": "Taking attendance data based on user id and date successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request body empty",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Request body empty": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  },
+                  "Request body type not date": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Page Not Found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "limit seacrh date": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "the start date exceeds the end date"
+                    }
+                  },
+                  "user not found": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "user not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absensi/:id/date/:offset/:limit": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Read Absensi User by Date",
+        "description": "Read all Absensi user, role admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "start_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "start_date": "2023-04-14",
+                    "end_date": "2023-04-14"
+                  },
+                  "description": "tipe data date format"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success read all absensi",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "Data": {
+                          "total_absensi": 1,
+                          "current_pages": 1,
+                          "total_pages": 1,
+                          "Datas": [
+                              {
+                                  "no": 1,
+                                  "user": {
+                                      "Id": 2,
+                                      "nip": "202304010001",
+                                      "username": "user",
+                                      "perusahaan": "PT BlueBird Tbk.",
+                                      "nama_karyawan": "user",
+                                      "email": "user@gmail.com",
+                                      "tipe_pegawai": "OS",
+                                      "chapter": "Golang Engineer",
+                                      "organization": "Engineering Manager",
+                                      "grade": "junior",
+                                      "squad": "squad management system, test squad 1 dan test squad 2",
+                                      "work_hour": "Shift 1",
+                                      "tanggal_bergabung": "2 Jan 2006"
+                                  },
+                                  "absensi": {
+                                      "user_id": 2,
+                                      "date": "5 May 2023",
+                                      "tap_in": "07:55:51 WIB",
+                                      "location_tap_in": "lantai 4",
+                                      "tap_out": "21:56:24 WIB",
+                                      "location_tap_out": "lantai 4",
+                                      "status": "Datang cepat 4 menit 9 detik dan overtime 5 jam 33 detik"
+                                  }
+                              }
+                          ]
+                      },
+                      "status_code": 200,
+                      "message": "Taking attendance data based on user id and successful date"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request body empty",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Request body empty": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  },
+                  "Request body type not date": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "limit seacrh page": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "exceeded the search data limit"
+                    }
+                  },
+                  "limit seacrh date": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "the start date exceeds the end date"
+                    }
+                  },
+                  "user not found": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "user not found"
+                    }
+                }}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absensi/:id/download/date": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Download Absensi All CSV",
+        "description": "Read all Absensi, admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "start_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "start_date": "2023-04-14",
+                    "end_date": "2023-04-14"
+                  },
+                  "description": "tipe data date format"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success read absensi user",
+            "content": {
+              "CSV": {}
+            }
+          },
+          "400": {
+            "description": "Request body empty",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Request body empty": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  },
+                  "Request body type not date": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "limit seacrh date": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "the start date exceeds the end date"
+                    }
+                  },
+                  "user not found": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "user not found"
                     }
                   }
                 }
@@ -3533,7 +4740,7 @@
     "/absensi/all": {
       "get": {
         "security": [],
-        "tags": ["Absensi"],
+        "tags": ["Absensi Management"],
         "summary": "Read Absensi",
         "description": "Read all Absensi user, role admin",
         "parameters": [
@@ -3553,59 +4760,63 @@
                   "raw": {
                     "value": {
                       "Data": [
-                        {
-                          "User": {
-                            "Id": 1,
-                            "nip": "202304010001",
-                            "username": "admin",
-                            "perusahaan": "PT BlueBird Tbk.",
-                            "nama_karyawan": "Admin",
-                            "email": "admin@gmail.com",
-                            "tipe_pegawai": "OS",
-                            "chapter": "Golang Engineer",
-                            "organization": "Engineering Manager",
-                            "squad": "Squad management system (test), Squad management system dan test",
-                            "grade": "senior1",
-                            "tanggal_bergabung": "04 Apr 2023"
+                          {
+                              "no": 1,
+                              "user": {
+                                  "Id": 2,
+                                  "nip": "202304010001",
+                                  "username": "user",
+                                  "perusahaan": "PT BlueBird Tbk.",
+                                  "nama_karyawan": "user",
+                                  "email": "user@gmail.com",
+                                  "tipe_pegawai": "OS",
+                                  "chapter": "Golang Engineer",
+                                  "organization": "Engineering Manager",
+                                  "grade": "junior",
+                                  "squad": "squad management system, test squad 1 dan test squad 2",
+                                  "work_hour": "Shift 1",
+                                  "tanggal_bergabung": "2 Jan 2006"
+                              },
+                              "absensi": {
+                                  "user_id": 2,
+                                  "date": "5 May 2023",
+                                  "tap_in": "07:55:51 WIB",
+                                  "location_tap_in": "lantai 4",
+                                  "tap_out": "21:56:24 WIB",
+                                  "location_tap_out": "lantai 4",
+                                  "status": "Datang cepat 4 menit 9 detik dan overtime 5 jam 33 detik"
+                              }
                           },
-                          "Absensi": {
-                            "UserID": 1,
-                            "Date": "07 Apr 2023",
-                            "TapIn": "18:55:21 WIB",
-                            "TapOut": "19:21:27 WIB",
-                            "Location": "test",
-                            "Status": "review",
-                            "Information": "Datang terlambat 9 jam 55 menit 21 detik dengan pulang cepat 8 jam 33 menit 54 detik"
+                          {
+                              "no": 2,
+                              "user": {
+                                  "Id": 2,
+                                  "nip": "202304010001",
+                                  "username": "user",
+                                  "perusahaan": "PT BlueBird Tbk.",
+                                  "nama_karyawan": "user",
+                                  "email": "user@gmail.com",
+                                  "tipe_pegawai": "OS",
+                                  "chapter": "Golang Engineer",
+                                  "organization": "Engineering Manager",
+                                  "grade": "junior",
+                                  "squad": "squad management system, test squad 1 dan test squad 2",
+                                  "work_hour": "Shift 1",
+                                  "tanggal_bergabung": "2 Jan 2006"
+                              },
+                              "absensi": {
+                                  "user_id": 2,
+                                  "date": "6 May 2023",
+                                  "tap_in": "",
+                                  "location_tap_in": "",
+                                  "tap_out": "22:32:46 WIB",
+                                  "location_tap_out": "lantai 4",
+                                  "status": "waiting for check in"
+                              }
                           }
-                        },
-                        {
-                          "User": {
-                            "Id": 1,
-                            "nip": "202304010001",
-                            "username": "admin",
-                            "perusahaan": "PT BlueBird Tbk.",
-                            "nama_karyawan": "Admin",
-                            "email": "admin@gmail.com",
-                            "tipe_pegawai": "OS",
-                            "chapter": "Golang Engineer",
-                            "organization": "Engineering Manager",
-                            "squad": "Squad management system (test), Squad management system dan test",
-                            "grade": "senior1",
-                            "tanggal_bergabung": "04 Apr 2023"
-                          },
-                          "Absensi": {
-                            "UserID": 1,
-                            "Date": "08 Apr 2023",
-                            "TapIn": "",
-                            "TapOut": "21:19:11 WIB",
-                            "Location": "test",
-                            "Status": "review",
-                            "Information": "waiting tap in"
-                          }
-                        }
                       ],
-                      "StatusCode": 200,
-                      "Message": "Get Absensi by id user Success"
+                      "status_code": 200,
+                      "message": "Take all absences successfully"
                     }
                   }
                 }
@@ -3643,15 +4854,14 @@
             }
           },
           "500": {
-            "description": "Server Error",
+            "description": "DB error",
             "content": {
               "application/json": {
                 "examples": {
-                  "java": {
-                    "description": "Server Error, cannot get data",
+                  "db error": {
                     "value": {
                       "status_code": 500,
-                      "message": "Server Error, cannot get data"
+                      "message": "failed to take attendance"
                     }
                   }
                 }
@@ -3661,12 +4871,12 @@
         }
       }
     },
-    "/absensi/:id": {
+    "/absensi/all/:offset/:limit": {
       "get": {
         "security": [],
-        "tags": ["Absensi"],
-        "summary": "Read Absensi by user",
-        "description": "Read all Absensi, user",
+        "tags": ["Absensi Management"],
+        "summary": "Read Absensi",
+        "description": "Read all Absensi user, role admin",
         "parameters": [
           {
             "name": "Bearrer Token",
@@ -3677,70 +4887,75 @@
         ],
         "responses": {
           "200": {
-            "description": "Success read absensi user",
+            "description": "Success read all absensi",
             "content": {
               "application/json": {
                 "examples": {
                   "raw": {
                     "value": {
+                      "Data": {
+                          "total_absensi": 2,
+                          "current_pages": 1,
+                          "total_pages": 1,
+                          "Datas": [
+                              {
+                                  "no": 1,
+                                  "user": {
+                                      "Id": 2,
+                                      "nip": "202304010001",
+                                      "username": "user",
+                                      "perusahaan": "PT BlueBird Tbk.",
+                                      "nama_karyawan": "user",
+                                      "email": "user@gmail.com",
+                                      "tipe_pegawai": "OS",
+                                      "chapter": "Golang Engineer",
+                                      "organization": "Engineering Manager",
+                                      "grade": "junior",
+                                      "squad": "squad management system, test squad 1 dan test squad 2",
+                                      "work_hour": "Shift 1",
+                                      "tanggal_bergabung": "2 Jan 2006"
+                                  },
+                                  "absensi": {
+                                      "user_id": 2,
+                                      "date": "5 May 2023",
+                                      "tap_in": "07:55:51 WIB",
+                                      "location_tap_in": "lantai 4",
+                                      "tap_out": "21:56:24 WIB",
+                                      "location_tap_out": "lantai 4",
+                                      "status": "Datang cepat 4 menit 9 detik dan overtime 5 jam 33 detik"
+                                  }
+                              },
+                              {
+                                  "no": 2,
+                                  "user": {
+                                      "Id": 2,
+                                      "nip": "202304010001",
+                                      "username": "user",
+                                      "perusahaan": "PT BlueBird Tbk.",
+                                      "nama_karyawan": "user",
+                                      "email": "user@gmail.com",
+                                      "tipe_pegawai": "OS",
+                                      "chapter": "Golang Engineer",
+                                      "organization": "Engineering Manager",
+                                      "grade": "junior",
+                                      "squad": "squad management system, test squad 1 dan test squad 2",
+                                      "work_hour": "Shift 1",
+                                      "tanggal_bergabung": "2 Jan 2006"
+                                  },
+                                  "absensi": {
+                                      "user_id": 2,
+                                      "date": "6 May 2023",
+                                      "tap_in": "",
+                                      "location_tap_in": "",
+                                      "tap_out": "22:32:46 WIB",
+                                      "location_tap_out": "lantai 4",
+                                      "status": "waiting for check in"
+                                  }
+                              }
+                          ]
+                      },
                       "status_code": 200,
-                      "message": "Get data success",
-                      "value": {
-                        "Data": [
-                          {
-                            "User": {
-                              "Id": 1,
-                              "nip": "202304010001",
-                              "username": "admin",
-                              "perusahaan": "PT BlueBird Tbk.",
-                              "nama_karyawan": "Admin",
-                              "email": "admin@gmail.com",
-                              "tipe_pegawai": "OS",
-                              "chapter": "Golang Engineer",
-                              "organization": "Engineering Manager",
-                              "squad": "Squad management system (test), Squad management system dan test",
-                              "grade": "senior1",
-                              "tanggal_bergabung": "04 Apr 2023"
-                            },
-                            "Absensi": {
-                              "UserID": 1,
-                              "Date": "07 Apr 2023",
-                              "TapIn": "18:55:21 WIB",
-                              "TapOut": "19:21:27 WIB",
-                              "Location": "test",
-                              "Status": "review",
-                              "Information": "Datang terlambat 9 jam 55 menit 21 detik dengan pulang cepat 8 jam 33 menit 54 detik"
-                            }
-                          },
-                          {
-                            "User": {
-                              "Id": 1,
-                              "nip": "202304010001",
-                              "username": "admin",
-                              "perusahaan": "PT BlueBird Tbk.",
-                              "nama_karyawan": "Admin",
-                              "email": "admin@gmail.com",
-                              "tipe_pegawai": "OS",
-                              "chapter": "Golang Engineer",
-                              "organization": "Engineering Manager",
-                              "squad": "Squad management system (test), Squad management system dan test",
-                              "grade": "senior1",
-                              "tanggal_bergabung": "04 Apr 2023"
-                            },
-                            "Absensi": {
-                              "UserID": 1,
-                              "Date": "08 Apr 2023",
-                              "TapIn": "",
-                              "TapOut": "21:19:11 WIB",
-                              "Location": "test",
-                              "Status": "review",
-                              "Information": "waiting tap in"
-                            }
-                          }
-                        ],
-                        "StatusCode": 200,
-                        "Message": "Get Absensi by id user Success"
-                      }
+                      "message": "Take all absences successfully"
                     }
                   }
                 }
@@ -3778,15 +4993,511 @@
             }
           },
           "500": {
-            "description": "Server Error",
+            "description": "DB error",
             "content": {
               "application/json": {
                 "examples": {
-                  "java": {
-                    "description": "Server Error, cannot get data",
+                  "db error": {
                     "value": {
                       "status_code": 500,
-                      "message": "Server Error, cannot get data"
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "limit seacrh page": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "exceeded the search data limit"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absensi/all/date": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Read Absensi User by Date",
+        "description": "Read all Absensi user, role user",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "start_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "start_date": "2023-04-14",
+                    "end_date": "2023-04-14"
+                  },
+                  "description": "tipe data date format"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success read all absensi",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "Data": [
+                          {
+                              "no": 1,
+                              "user": {
+                                  "Id": 2,
+                                  "nip": "202304010001",
+                                  "username": "user",
+                                  "perusahaan": "PT BlueBird Tbk.",
+                                  "nama_karyawan": "user",
+                                  "email": "user@gmail.com",
+                                  "tipe_pegawai": "OS",
+                                  "chapter": "Golang Engineer",
+                                  "organization": "Engineering Manager",
+                                  "grade": "junior",
+                                  "squad": "squad management system, test squad 1 dan test squad 2",
+                                  "work_hour": "Shift 1",
+                                  "tanggal_bergabung": "2 Jan 2006"
+                              },
+                              "absensi": {
+                                  "user_id": 2,
+                                  "date": "5 May 2023",
+                                  "tap_in": "07:55:51 WIB",
+                                  "location_tap_in": "lantai 4",
+                                  "tap_out": "21:56:24 WIB",
+                                  "location_tap_out": "lantai 4",
+                                  "status": "Datang cepat 4 menit 9 detik dan overtime 5 jam 33 detik"
+                              }
+                          }
+                      ],
+                      "status_code": 200,
+                      "message": "Taking attendance data based on date successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request body empty",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Request body empty": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  },
+                  "Request body type not date": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "limit seacrh date": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "the start date exceeds the end date"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absensi/all/date/:offset/:limit": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Read Absensi User by Date",
+        "description": "Read all Absensi user, role user",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "start_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "start_date": "2023-04-14",
+                    "end_date": "2023-04-14"
+                  },
+                  "description": "tipe data date format"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success read all absensi",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "Data": {
+                          "total_absensi": 1,
+                          "current_pages": 1,
+                          "total_pages": 1,
+                          "Datas": [
+                              {
+                                  "no": 1,
+                                  "user": {
+                                      "Id": 2,
+                                      "nip": "202304010001",
+                                      "username": "user",
+                                      "perusahaan": "PT BlueBird Tbk.",
+                                      "nama_karyawan": "user",
+                                      "email": "user@gmail.com",
+                                      "tipe_pegawai": "OS",
+                                      "chapter": "Golang Engineer",
+                                      "organization": "Engineering Manager",
+                                      "grade": "junior",
+                                      "squad": "squad management system, test squad 1 dan test squad 2",
+                                      "work_hour": "Shift 1",
+                                      "tanggal_bergabung": "2 Jan 2006"
+                                  },
+                                  "absensi": {
+                                      "user_id": 2,
+                                      "date": "5 May 2023",
+                                      "tap_in": "07:55:51 WIB",
+                                      "location_tap_in": "lantai 4",
+                                      "tap_out": "21:56:24 WIB",
+                                      "location_tap_out": "lantai 4",
+                                      "status": "Datang cepat 4 menit 9 detik dan overtime 5 jam 33 detik"
+                                  }
+                              }
+                          ]
+                      },
+                      "status_code": 200,
+                      "message": "Taking attendance data based on date successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request body empty",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Request body empty": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  },
+                  "Request body type not date": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "limit seacrh date": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "the start date exceeds the end date"
+                    }
+                  },
+                  "limit seacrh page": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "exceeded the search data limit"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absensi/date": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Read Absensi User by Date",
+        "description": "Read all Absensi user, role user",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "start_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "start_date": "2023-04-14",
+                    "end_date": "2023-04-14"
+                  },
+                  "description": "tipe data date format"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success read all absensi",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "Data": [
+                          {
+                              "no": 1,
+                              "user": {
+                                  "Id": 2,
+                                  "nip": "202304010001",
+                                  "username": "user",
+                                  "perusahaan": "PT BlueBird Tbk.",
+                                  "nama_karyawan": "user",
+                                  "email": "user@gmail.com",
+                                  "tipe_pegawai": "OS",
+                                  "chapter": "Golang Engineer",
+                                  "organization": "Engineering Manager",
+                                  "grade": "junior",
+                                  "squad": "squad management system, test squad 1 dan test squad 2",
+                                  "work_hour": "Shift 1",
+                                  "tanggal_bergabung": "2 Jan 2006"
+                              },
+                              "absensi": {
+                                  "user_id": 2,
+                                  "date": "5 May 2023",
+                                  "tap_in": "07:55:51 WIB",
+                                  "location_tap_in": "lantai 4",
+                                  "tap_out": "21:56:24 WIB",
+                                  "location_tap_out": "lantai 4",
+                                  "status": "Datang cepat 4 menit 9 detik dan overtime 5 jam 33 detik"
+                              }
+                          }
+                      ],
+                      "status_code": 200,
+                      "message": "Taking attendance data based on date successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request body empty",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Request body empty": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  },
+                  "Request body type not date": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "limit seacrh date": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "the start date exceeds the end date"
                     }
                   }
                 }
@@ -3799,7 +5510,7 @@
     "/absensi/download": {
       "get": {
         "security": [],
-        "tags": ["Absensi"],
+        "tags": ["Absensi Management"],
         "summary": "Download Absensi All CSV",
         "description": "Read all Absensi, admin",
         "parameters": [
@@ -3852,7 +5563,845 @@
             "content": {
               "application/json": {
                 "examples": {
-                  "java": {
+                  "DB error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/absensi/download/date": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Download Absensi All CSV",
+        "description": "Read all Absensi, admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "start_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 10
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "start_date": "2023-04-14",
+                    "end_date": "2023-04-14"
+                  },
+                  "description": "tipe data date format"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success read absensi user",
+            "content": {
+              "CSV": {}
+            }
+          },
+          "400": {
+            "description": "Request body empty",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Request body empty": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  },
+                  "Request body type not date": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "start_date and end_date cannot be empty, for example 2023-01-01"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "failed to take attendance"
+                    }
+                  },
+                  "limit seacrh date": {
+                    "value": {
+                      "status_code": 500,
+                      "message": "the start date exceeds the end date"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shift-work": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Read All Shift Work",
+        "description": "Read all shift work, user",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes get shift work",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "status_code": 200,
+                      "message": "Get shift successfully",
+                      "data": [
+                        {
+                          "id": 1,
+                          "name": "Shift 1",
+                          "description": "keterlambatan 30 menit",
+                          "tap_in": "09:00:00",
+                          "tap_out": "18:00:00",
+                          "location": "Gedung Baru Lt. 6"
+                        },
+                        {
+                          "id": 2,
+                          "name": "Shift 2",
+                          "description": "keterlambatan 30 menit",
+                          "tap_in": "08:00:00",
+                          "tap_out": "17:00:00",
+                          "location": "Gedung Baru Lt. 4"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Create Shift Work",
+        "description": "create shift work, admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 255
+                  },
+                  "tap_in": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 5
+                  },
+                  "tap_out": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 5
+                  },
+                  "location": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "name": "Shift 4",
+                    "description": "keterlambatan 30 menit (test)",
+                    "tap_in": "00:00",
+                    "tap_out": "00:00",
+                    "location": "Gedung Baru Lt. 4 (test)"
+                  },
+                  "description": "yang tidak wajib di isi hanya description"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succes create shift work",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "status_code": 201,
+                      "message": "Created shift successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Field empty": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "name, tap_in, tap_out and location cannot be empty"
+                    }
+                  },
+                  "Field name limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "maximum field length description 100"
+                    }
+                  },
+                  "Field description limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "maximum field length description 255"
+                    }
+                  },
+                  "Field tap_in or tap_out limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "tap_in and tap_out are not of type time, for example 09:00"
+                    }
+                  },
+                  "Field location limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "maximum field length description 100"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shift-work/all": {
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Read All Shift Work",
+        "description": "Read all shift work, admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes get shift work",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "status_code": 200,
+                      "message": "Get shift successfully",
+                      "data": [
+                        {
+                          "id": 1,
+                          "name": "Shift 1",
+                          "description": "keterlambatan 30 menit",
+                          "tap_in": "09:00:00",
+                          "tap_out": "18:00:00",
+                          "location": "Gedung Baru Lt. 6"
+                        },
+                        {
+                          "id": 2,
+                          "name": "Shift 2",
+                          "description": "keterlambatan 30 menit",
+                          "tap_in": "08:00:00",
+                          "tap_out": "17:00:00",
+                          "location": "Gedung Baru Lt. 4"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shift-work/:id": {
+      "put": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Update Shift Work By ID",
+        "description": "update shift work, admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 255
+                  },
+                  "tap_in": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 5
+                  },
+                  "tap_out": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 5
+                  },
+                  "location": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              },
+              "examples": {
+                "request_body": {
+                  "value": {
+                    "name": "Shift 4",
+                    "description": "keterlambatan 30 menit (test)",
+                    "tap_in": "00:00",
+                    "tap_out": "00:00",
+                    "location": "Gedung Baru Lt. 4 (test)"
+                  },
+                  "description": "yang tidak wajib di isi hanya description"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succes update shift work",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "status_code": 200,
+                      "message": "Update shift successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Field empty": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "name, tap_in, tap_out and location cannot be empty"
+                    }
+                  },
+                  "Field name limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "maximum field length description 100"
+                    }
+                  },
+                  "Field description limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "maximum field length description 255"
+                    }
+                  },
+                  "Field tap_in or tap_out limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "tap_in and tap_out are not of type time, for example 09:00"
+                    }
+                  },
+                  "Field location limit": {
+                    "value": {
+                      "status_code": 400,
+                      "message": "maximum field length description 100"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Delete Shift Work By ID",
+        "description": "update shift work, admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes delete shift work",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "status_code": 200,
+                      "message": "Delete shift successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Page not found",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Page not found": {
+                    "value": {
+                      "status_code": 404,
+                      "message": "Page not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
+                    "description": "Server Error, cannot get data",
+                    "value": {
+                      "status_code": 500,
+                      "message": "Server Error, cannot get data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "security": [],
+        "tags": ["Absensi Management"],
+        "summary": "Read All Shift Work",
+        "description": "Read all shift work, admin",
+        "parameters": [
+          {
+            "name": "Bearrer Token",
+            "in": "header",
+            "required": true,
+            "description": "Need bearrer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succes get shift work",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "raw": {
+                    "value": {
+                      "status_code": 200,
+                      "message": "Get shift successfully",
+                      "data": {
+                        "id": 1,
+                        "name": "Shift 1",
+                        "description": "keterlambatan 30 menit",
+                        "tap_in": "09:00:00",
+                        "tap_out": "18:00:00",
+                        "location": "Gedung Baru Lt. 6"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorize, token invalid",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Tidak ada Token": {
+                    "value": {
+                      "status_code": 401,
+                      "message": "You are not logged in"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "UnAuthorize": {
+                    "value": {
+                      "status_code": 403,
+                      "message": "User is not admin, cannot access the api"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "DB error",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "db error": {
                     "description": "Server Error, cannot get data",
                     "value": {
                       "status_code": 500,
